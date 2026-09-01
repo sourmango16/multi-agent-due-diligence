@@ -281,17 +281,6 @@ That loop should have explicit termination criteria and a maximum number of iter
 
 > “I wouldn't call something multi-agent simply because it contains several LLM calls. Here, the researcher, analyst, critic, verifier and adjudicator have distinct objectives and operate at different stages of state. Their outputs influence subsequent agents through an orchestration layer, while deterministic code handles state transformation, routing and approval. I describe it as an orchestrated multi-agent workflow rather than a fully decentralised autonomous-agent system.”
 
-## Repository contents
-
-```text
-multi-agent-due-diligence/
-├── README.md
-├── multi-agent-due-diligence-system-public.json
-└── assets/
-    ├── architecture.png
-    └── workflow-screenshot.png
-```
-
 ## Disclaimer
 
 This project is a prototype demonstrating multi-agent orchestration, evidence adjudication and human-in-the-loop governance. Outputs should not be treated as investment, legal, credit or other professional due-diligence advice.
