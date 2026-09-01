@@ -308,8 +308,7 @@ The complete workflow executed successfully across specialist research,
 analysis, adversarial critique, targeted verification, adjudication,
 human approval and controlled publication.
 
-![Successful n8n workflow execution](01-workflow-execution.png)<img width="2048" height="822" alt="01-workflow-execution" src="https://github.com/user-attachments/assets/c93f253d-b4a1-483a-bf5c-8ae5ead2304b" />
-
+![Successful n8n workflow execution](01-workflow-execution.png)
 
 ### 2. Evidence-based final adjudication
 
@@ -317,8 +316,7 @@ The Final Adjudicator receives the consolidated verification results and
 produces a structured decision separating overall risk from confidence,
 while preserving confirmed and unresolved findings.
 
-![Final Adjudicator structured output](02-final-adjudication.png)<img width="2048" height="1049" alt="02-final-adjudication" src="https://github.com/user-attachments/assets/77cd41d8-6933-407a-93a2-396a65547eb9" />
-
+![Final Adjudicator structured output](02-final-adjudication.png)
 
 ### 3. Human review
 
@@ -326,8 +324,7 @@ The system does not automatically publish a material assessment requiring
 review. It pauses the workflow and sends the executive assessment to a
 human decision-maker.
 
-![Human review required](03-human-review.png)<img width="816" height="705" alt="03-human-review" src="https://github.com/user-attachments/assets/15c7f481-1f67-45cb-9bac-3f1cd73f4f04" />
-
+![Human review required](03-human-review.png)
 
 ### 4. Approval-gated publication
 
@@ -335,7 +332,7 @@ Following explicit approval, the workflow resumes. The approved assessment
 is appended to the assessment register together with the decision metadata
 and timestamp.
 
-![Approved assessment publication]<img width="1021" height="845" alt="04-approved-publication" src="https://github.com/user-attachments/assets/4601fad1-c4c7-4ec4-b11c-3272e4579e34" />
+![Approved assessment publication](04-approved-publication.png)
 
 ## 2-minute demo walkthrough
 
