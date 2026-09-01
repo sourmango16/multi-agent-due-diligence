@@ -4,6 +4,9 @@
 
 > A working n8n prototype that decomposes corporate due diligence across specialist AI agents, challenges the initial analysis, verifies material claims, adjudicates conflicting evidence, and keeps a human at the final decision boundary.
 
+## System Architecture
+
+![Multi-Agent Corporate Due Diligence System](Multi-Agent%20Corporate%20Due%20Diligence%20System.png)
 ## Why I built this
 
 A single LLM can produce a convincing corporate assessment very quickly. The problem is that a polished answer is not necessarily a trustworthy one.
