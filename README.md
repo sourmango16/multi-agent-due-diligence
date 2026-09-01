@@ -244,7 +244,70 @@ That loop should have explicit termination criteria and a maximum number of iter
 10. Complete the human approval and confirm that only the approved assessment is published.
 
 > **Important:** the public JSON is sanitized. Account-specific integrations require configuration before the workflow will execute end-to-end.
+## Example Run
 
+### Microsoft — End-to-End Validation
+
+The prototype was executed end-to-end using Microsoft as a test company to validate the complete orchestration, challenge, verification, adjudication and human-approval flow.
+
+| Dimension | Result |
+|---|---|
+| **Overall Risk** | MODERATE |
+| **Confidence** | MEDIUM |
+| **Human Review Required** | YES |
+| **Final Decision** | APPROVED BY HUMAN REVIEWER |
+
+### What happened
+
+The specialist research agents independently collected news, financial and leadership signals before the Due Diligence Analyst produced the initial assessment.
+
+The workflow did **not** accept that assessment as the final answer.
+
+The independent Critic challenged the analysis and identified material claims requiring further verification. These concerns were converted into targeted verification tasks and investigated before the Final Adjudicator produced the final assessment.
+
+The adjudication process distinguished between:
+
+- **Confirmed findings** — supported by available evidence
+- **Unresolved findings** — material claims that could not be sufficiently verified
+- **Contradicted or downgraded claims** — assertions whose evidentiary support did not survive challenge
+- **Key risks** — material business risks supported by the adjudicated evidence
+
+The resulting assessment was:
+
+> **MODERATE risk with MEDIUM confidence**
+
+Importantly, uncertainty did not automatically increase the risk rating. Where material claims could not be independently established, the system reduced **confidence** and surfaced the uncertainty for human review.
+
+### Human decision boundary
+
+The Final Adjudicator determined that human review was required.
+
+The workflow therefore paused and sent the assessment to a human reviewer rather than publishing automatically.
+
+Following explicit human approval, the workflow resumed and wrote the approved assessment to the assessment register together with an approval timestamp.
+
+This validates the complete control pattern:
+
+`Research → Analysis → Challenge → Verification → Adjudication → Human Approval → Controlled Publication`
+
+### Example findings
+
+The Microsoft run demonstrated why the challenge-and-verification architecture matters.
+
+The system retained evidence supporting Microsoft's AI strategic momentum and strong reported financial performance, while separately surfacing unresolved questions around areas such as AI-attributable investment and economics, model-training provenance, and product-level AI monetization.
+
+Claims that went beyond the available evidence were downgraded rather than being carried forward as established facts.
+
+> **The objective of the prototype is not to make the AI appear certain. It is to make evidence, disagreement and uncertainty visible before a human makes the final decision.**
+
+### Execution evidence
+
+The following screenshots demonstrate the prototype running through the major control points:
+
+1. **Workflow execution** — successful orchestration across specialist agents, analysis, critique, verification and adjudication
+2. **Final adjudication** — structured risk, confidence, confirmed findings and unresolved findings
+3. **Human approval** — explicit reviewer decision before publication
+4. **Approved assessment register** — persisted output following approval
 ## 2-minute demo walkthrough
 
 **Opening — 15 seconds**
