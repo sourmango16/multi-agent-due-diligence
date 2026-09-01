@@ -1,0 +1,899 @@
+{
+  "name": "Multi-Agent Due Diligence System - Public Demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "public-when-clicking-execute-workflow",
+      "name": "When clicking \u2018Execute workflow\u2019"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "public-assignment-1",
+              "name": "company_name",
+              "value": "Example Corp",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "public-edit-fields",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {
+          "webSearch": {
+            "searchContextSize": "medium"
+          }
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        192
+      ],
+      "id": "public-openai-chat-model",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The company I want to research is {{$json.company_name}}.\n\nFind 3 important recent news developments about this company.\n\nUse web search to find current information.\n\nFor each development, tell me:\n1. What happened\n2. Why it matters\n3. The source\n4. The publication date\n\nDo not rely only on what you already know.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "public-news-researcher",
+      "name": "News Researcher"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The company I want to research is {{$json.company_name}}.\n\nUse web search to find only the latest reported quarterly or annual financial results for this company.\n\nReturn only:\n\n1. Reporting period\n2. Revenue\n3. Revenue growth\n4. Net income\n5. Source\n6. Publication date\n\nPrefer the company's investor relations or official earnings release.\n\nDo not search broadly.\nDo not add commentary.\nDo not analyze risks yet.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        480,
+        320
+      ],
+      "id": "public-financial-researcher",
+      "name": "Financial Researcher"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {
+          "webSearch": {
+            "searchContextSize": "low"
+          }
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        480
+      ],
+      "id": "public-openai-chat-model1",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The company I want to research is {{$json.company_name}}.\n\nUse web search to identify the company's current senior leadership.\n\nReturn only:\n\n1. CEO - name and tenure/start date\n2. CFO - name and tenure/start date\n3. One other senior executive important to the company's current strategy\n4. Any major CEO or CFO leadership change announced in the last 12 months\n5. Source\n6. Publication date\n\nPrefer the company's official leadership pages, investor relations pages,\nregulatory filings or official announcements.\n\nDo not search broadly.\nDo not speculate.\nIf information cannot be verified, say \"Not verified\".",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        496,
+        656
+      ],
+      "id": "public-leadership-researcher",
+      "name": "Leadership Researcher"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {
+          "webSearch": {
+            "searchContextSize": "=low"
+          }
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        864
+      ],
+      "id": "public-openai-chat-model2",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        16
+      ],
+      "id": "public-merge",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        256
+      ],
+      "id": "public-openai-chat-model3",
+      "name": "OpenAI Chat Model3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the lead due diligence analyst assessing {{$json.company_name}}.\n\nThree specialist researchers have independently investigated the company.\n\nNEWS RESEARCH\n{{$json.news_research}}\n\nFINANCIAL RESEARCH\n{{$json.financial_research}}\n\nLEADERSHIP RESEARCH\n{{$json.leadership_research}}\n\nYour job is NOT to repeat their research.\n\nSynthesize the evidence across all three research streams and identify what it collectively tells us about the company.\n\nProduce:\n\n1. EXECUTIVE ASSESSMENT\nGive a concise overall assessment of the company's current position.\n\n2. KEY POSITIVE SIGNALS\nIdentify the 3 strongest positive signals supported by the research.\n\n3. KEY RISKS / RED FLAGS\nIdentify the 3 most important risks or concerns.\n\n4. CROSS-SOURCE INSIGHTS\nIdentify connections between news, financial performance and leadership that may not be obvious when each research stream is viewed independently.\n\n5. CONTRADICTIONS OR INFORMATION GAPS\nFlag conflicting evidence, weak evidence, outdated information or important unanswered questions.\n\n6. DUE DILIGENCE QUESTIONS\nGive 5 questions that a senior decision-maker should investigate next.\n\n7. FINAL VERDICT\nRate the company:\nLOW RISK / MODERATE RISK / HIGH RISK\n\nThen explain the rating in no more than 3 sentences.\n\nImportant:\n- Base conclusions only on the supplied research.\n- Do not invent facts.\n- Distinguish facts from inference.\n- If evidence is insufficient, explicitly say so.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1264,
+        16
+      ],
+      "id": "public-due-diligence-analyst",
+      "name": "Due Diligence Analyst"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      company_name: $(\"Edit Fields\").first().json.company_name,\n      news_research: $(\"News Researcher\").first().json.output,\n      financial_research: $(\"Financial Researcher\").first().json.output,\n      leadership_research: $(\"Leadership Researcher\").first().json.output\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        16
+      ],
+      "id": "public-prepare-research",
+      "name": "Prepare Research"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1632,
+        224
+      ],
+      "id": "public-openai-chat-model4",
+      "name": "OpenAI Chat Model4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a rigorous due diligence reviewer.\n\nYour job is to challenge the analysis produced by another analyst.\n\nCOMPANY:\n{{$(\"Prepare Research\").first().json.company_name}}\n\nORIGINAL RESEARCH EVIDENCE\n\nNEWS:\n{{$(\"Prepare Research\").first().json.news_research}}\n\nFINANCIAL:\n{{$(\"Prepare Research\").first().json.financial_research}}\n\nLEADERSHIP:\n{{$(\"Prepare Research\").first().json.leadership_research}}\n\nANALYST'S CONCLUSION:\n{{$json.output}}\n\nAudit the analyst's conclusion against the supplied research.\n\nCheck for:\n\n1. UNSUPPORTED CLAIMS\nIdentify conclusions that are not adequately supported by the research.\n\n2. FACT / INFERENCE CONFUSION\nIdentify places where an inference has been presented too strongly as fact.\n\n3. CONTRADICTIONS\nIdentify conclusions that conflict with any of the supplied evidence.\n\n4. MISSED SIGNALS\nIdentify important evidence the analyst overlooked or underweighted.\n\n5. RISK-RATING CHALLENGE\nChallenge the LOW / MODERATE / HIGH risk rating.\nState whether you AGREE or DISAGREE and explain why.\n\n6. CONFIDENCE\nGive the analysis a confidence score from 0-100.\n\n7. VERIFICATION REQUIREMENTS\nList up to 5 specific claims that should be independently verified before the analysis is trusted.\n\nDo not rewrite the entire due diligence report.\nAct as a skeptical reviewer.\nDo not invent new facts.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1632,
+        16
+      ],
+      "id": "public-due-diligence-critic",
+      "name": "Due Diligence Critic"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an independent verification researcher in a corporate due-diligence system.\n\nCOMPANY:\n{{$json.company_name}}\n\nVERIFICATION TASK ID:\n{{$json.verification_task_id}}\n\nCLAIM / TASK TO VERIFY:\n{{$json.verification_task}}\n\nYour job is to independently assess THIS claim only. Do not restart the full company assessment.\n\nUsing the research tools available to you, return:\n1. STATUS: VERIFIED | PARTIALLY_VERIFIED | NOT_VERIFIED | CONTRADICTED\n2. FINDING: concise conclusion specific to the claim\n3. EVIDENCE: strongest supporting or contradicting evidence found\n4. SOURCE: source/document and publication date where available\n5. REMAINING GAP: what remains unresolved, or NONE\n\nRules:\n- Prefer primary and authoritative sources.\n- Do not invent evidence.\n- Failure to find evidence means NOT_VERIFIED, not false.\n- Distinguish confirmed fact from inference.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2160,
+        16
+      ],
+      "id": "public-verification-researcher",
+      "name": "Verification Researcher"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2160,
+        240
+      ],
+      "id": "public-openai-chat-model5",
+      "name": "OpenAI Chat Model5"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2800,
+        304
+      ],
+      "id": "public-openai-chat-model6",
+      "name": "OpenAI Chat Model6"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"overall_risk\": {\n      \"type\": \"string\",\n      \"enum\": [\"LOW\", \"MODERATE\", \"HIGH\", \"CRITICAL\"]\n    },\n    \"confidence\": {\n      \"type\": \"string\",\n      \"enum\": [\"LOW\", \"MEDIUM\", \"HIGH\"]\n    },\n    \"final_executive_assessment\": {\n      \"type\": \"string\"\n    },\n    \"confirmed_findings\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"unresolved_findings\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"contradicted_claims\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"key_risks\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"recommended_actions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"human_review_required\": {\n      \"type\": \"string\",\n      \"enum\": [\"YES\", \"NO\"]\n    },\n    \"human_review_reason\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"overall_risk\",\n    \"confidence\",\n    \"final_executive_assessment\",\n    \"confirmed_findings\",\n    \"unresolved_findings\",\n    \"contradicted_claims\",\n    \"key_risks\",\n    \"recommended_actions\",\n    \"human_review_required\",\n    \"human_review_reason\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2944,
+        432
+      ],
+      "id": "public-structured-output-parser",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the Final Adjudicator in a multi-agent corporate due-diligence system.\n\nYour role is NOT to perform new research.\nYour role is to adjudicate between the original analysis, the independent critic, and the subsequent verification results.\n\nCOMPANY:\n{{ $(\"Prepare Research\").first().json.company_name }}\n\n====================\nORIGINAL ANALYST REPORT\n====================\n\n{{ $(\"Due Diligence Analyst\").first().json.output }}\n====================\nINDEPENDENT CRITIC REVIEW\n====================\n\n{{ $(\"Due Diligence Critic\").first().json.output }}\n\n====================\nINDEPENDENT VERIFICATION RESULTS\n====================\n\n{{ JSON.stringify($json.verification_results, null, 2)\n}}\n\nYou must now produce the final executive due-diligence assessment.\n\nADJUDICATION RULES:\n\n1. VERIFIED evidence outranks unsupported claims from either the Analyst or Critic.\n\n2. PARTIALLY_VERIFIED evidence may support a conclusion, but uncertainty must remain explicit.\n\n3. NOT_VERIFIED means the claim must NOT be presented as established fact.\n\n4. CONTRADICTED evidence must override the original claim.\n\n5. Distinguish:\n   - confirmed fact\n   - reasonable inference\n   - unresolved uncertainty\n\n6. Do not invent missing evidence.\n\n7. Do not silently resolve disagreements between agents. If a material disagreement remains unresolved, state it.\n\n8. Do not simply summarize the previous agents. Make an independent final judgment based on the evidence hierarchy above.\n\n9. Risk severity must reflect BOTH:\n   - probability/credibility of the risk\n   - potential business impact\n\n10. If an important claim cannot be independently verified, reduce confidence rather than automatically increasing risk.\n\nPopulate the connected Structured Output Parser exactly. Do not create any additional fields or wrapper objects.\n\nDetermine:\n\nOVERALL RISK:\nLOW | MODERATE | HIGH | CRITICAL\n\nCONFIDENCE:\nLOW | MEDIUM | HIGH\n\nFINAL EXECUTIVE ASSESSMENT:\nA concise synthesis explaining the company's position and the most material implications.\n\nCONFIRMED FINDINGS:\nOnly findings sufficiently supported by the evidence.\n\nUNRESOLVED FINDINGS:\nMaterial claims that remain uncertain or insufficiently verified.\n\nCONTRADICTED / DOWNGRADED CLAIMS:\nClaims from the original analysis or critic that verification weakened or contradicted.\n\nKEY RISKS:\nThe 3-5 risks that matter most to an executive decision-maker.\n\nRECOMMENDED ACTIONS:\nConcrete follow-up actions, prioritised by importance.\n\nHUMAN REVIEW REQUIRED:\nYES | NO\n\nHUMAN REVIEW REASON:\nExplain exactly what requires human judgment or additional evidence. If none, state NONE.\nCRITICAL OUTPUT FORMAT INSTRUCTION:\n\nReturn ONLY the fields required by the connected Structured Output Parser.\n\nThe top-level object must begin directly with:\noverall_risk\nconfidence\nfinal_executive_assessment\n\nDo NOT wrap the response inside:\n- \"output\"\n- \"state\"\n- \"response\"\n- \"result\"\n- \"data\"\n\nDo NOT return markdown.\nDo NOT use ```json code fences.\nDo NOT add explanatory text before or after the structured response.\n\nThe object itself is the response.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2800,
+        16
+      ],
+      "id": "public-final-adjudicator",
+      "name": "Final Adjudicator"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8886b358-9970-4a39-a6d5-71b80189ee84",
+              "leftValue": "={{ $json.output.human_review_required === 'YES' }}",
+              "rightValue": "NO_REVIEW_REQUIRED",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3216,
+        16
+      ],
+      "id": "public-if",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "reviewer@example.com",
+        "subject": "={{ `Human Review Required \u2014 ${$(\"Prepare Research\").first().json.company_name} \u2014 ${$json.output.overall_risk} Risk` }}",
+        "message": "={{ `\nEXECUTIVE ASSESSMENT\n\n${$json.output.final_executive_assessment}\n\nWHY HUMAN REVIEW IS REQUIRED\n\n${$json.output.human_review_reason}\n\nUNRESOLVED FINDINGS\n\n${($json.output.unresolved_findings || []).map((x, i) => `${i + 1}. ${x}`).join('\\n\\n')}\n\nPlease review the assessment and select your decision below.\n` }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Approve Assessment",
+            "disapproveLabel": "Needs further assessment"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3504,
+        0
+      ],
+      "id": "public-send-a-message",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst verificationResults = items.map((item, index) => ({\n  task_id: index + 1,\n  verification_result: item.json.output ?? item.json\n}));\n\nreturn [\n  {\n    json: {\n      verification_count: verificationResults.length,\n      verification_results: verificationResults\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        16
+      ],
+      "id": "public-consolidate-verification-results",
+      "name": "Consolidate Verification Results"
+    },
+    {
+      "parameters": {
+        "jsCode": "const critique = $(\"Due Diligence Critic\").first().json.output;\n\nconst marker = \"VERIFICATION REQUIREMENTS\";\n\nconst section = critique.includes(marker)\n  ? critique.split(marker)[1]\n  : critique;\n\nconst lines = section\n  .split(\"\\n\")\n  .map(line => line.trim())\n  .filter(line => /^\\d+[\\).]/.test(line));\n\nconst topThree = lines.slice(0, 3);\n\nreturn topThree.map((task, index) => ({\n  json: {\n    company_name: $(\"Prepare Research\").first().json.company_name,\n    verification_task_id: index + 1,\n    verification_task: task.replace(/^\\d+[\\).]\\s*/, \"\")\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        16
+      ],
+      "id": "public-prepare-verification-tasks",
+      "name": "Prepare Verification Tasks"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "public-approval-condition",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3728,
+        0
+      ],
+      "id": "public-if1",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Approved Assessments",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{ $(\"Prepare Research\").first().json.company_name }}",
+            "Overall Risk": "={{ $(\"Final Adjudicator\").first().json.output.overall_risk }}",
+            "Confidence": "={{ $(\"Final Adjudicator\").first().json.output.confidence }}",
+            "Executive Assessment": "={{ $(\"Final Adjudicator\").first().json.output.final_executive_assessment }}",
+            "Confirmed Findings": "={{ $(\"Final Adjudicator\").first().json.output.confirmed_findings.join(\"\\n\") }}",
+            "Unresolved Findings": "={{ $(\"Final Adjudicator\").first().json.output.unresolved_findings.join(\"\\n\") }}",
+            "Contradicted Claims": "={{ $(\"Final Adjudicator\").first().json.output.contradicted_claims.join(\"\\n\") }}\n",
+            "Key Risks": "={{ $(\"Final Adjudicator\").first().json.output.key_risks.join(\"\\n\") }}",
+            "Recommended Actions": "={{ $(\"Final Adjudicator\").first().json.output.recommended_actions.join(\"\\n\") }}",
+            "Human Review Required": "={{ $(\"Final Adjudicator\").first().json.output.human_review_required }}",
+            "Human Review Reason": "={{ $(\"Final Adjudicator\").first().json.output.human_review_reason }}",
+            "Approved At": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Overall Risk",
+              "displayName": "Overall Risk",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Executive Assessment",
+              "displayName": "Executive Assessment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Confirmed Findings",
+              "displayName": "Confirmed Findings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Unresolved Findings",
+              "displayName": "Unresolved Findings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contradicted Claims",
+              "displayName": "Contradicted Claims",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Key Risks",
+              "displayName": "Key Risks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recommended Actions",
+              "displayName": "Recommended Actions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Human Review Required",
+              "displayName": "Human Review Required",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Human Review Reason",
+              "displayName": "Human Review Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Approved At",
+              "displayName": "Approved At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        4016,
+        -16
+      ],
+      "id": "public-approved-assessments",
+      "name": "Approved Assessments"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking \u2018Execute workflow\u2019": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "News Researcher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Financial Researcher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Leadership Researcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "News Researcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Financial Researcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Leadership Researcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News Researcher": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Financial Researcher": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Leadership Researcher": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Prepare Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Due Diligence Analyst",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Due Diligence Analyst": {
+      "main": [
+        [
+          {
+            "node": "Due Diligence Critic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Research": {
+      "main": [
+        [
+          {
+            "node": "Due Diligence Analyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Due Diligence Critic",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Due Diligence Critic": {
+      "main": [
+        [
+          {
+            "node": "Prepare Verification Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verification Researcher",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verification Researcher": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Verification Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Final Adjudicator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Final Adjudicator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Adjudicator": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidate Verification Results": {
+      "main": [
+        [
+          {
+            "node": "Final Adjudicator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Verification Tasks": {
+      "main": [
+        [
+          {
+            "node": "Verification Researcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Approved Assessments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
