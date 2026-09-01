@@ -3,7 +3,7 @@
 **Evidence verification and human-governed decisioning for corporate due diligence**
 
 > A working n8n prototype that decomposes corporate due diligence across specialist AI agents, challenges the initial analysis, verifies material claims, adjudicates conflicting evidence, and keeps a human at the final decision boundary.
-
+**Status:** Working Prototype · **Orchestration:** n8n · **AI:** OpenAI · **Pattern:** Orchestrated Multi-Agent · **Governance:** Human-in-the-Loop
 ## System Architecture
 
 ![Multi-Agent Corporate Due Diligence System](Multi-Agent%20Corporate%20Due%20Diligence%20System.png)
@@ -23,63 +23,7 @@ For due diligence, I wanted the system to do more than research and summarize. I
 
 The result is an **orchestrated multi-agent workflow** rather than a single agent with a long prompt.
 
-## Architecture
-
-```text
-                         ┌──────────────────────┐
-                         │    Company Input     │
-                         └──────────┬───────────┘
-                                    │
-                  ┌─────────────────┼─────────────────┐
-                  │                 │                 │
-                  ▼                 ▼                 ▼
-          ┌───────────────┐ ┌───────────────┐ ┌─────────────────┐
-          │ News          │ │ Financial     │ │ Leadership      │
-          │ Researcher    │ │ Researcher    │ │ Researcher      │
-          └───────┬───────┘ └───────┬───────┘ └────────┬────────┘
-                  │                 │                  │
-                  └─────────────────┼──────────────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Research Aggregation │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Due Diligence Analyst│
-                         │ Initial hypothesis   │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Independent Critic   │
-                         │ Challenge & gaps     │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Verification Tasks   │
-                         │ Targeted questions   │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Verification         │
-                         │ Researcher           │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Final Adjudicator    │
-                         │ Evidence hierarchy   │
-                         └──────────┬───────────┘
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Human Approval Gate  │
-                         └──────────┬───────────┘
-                                    │ Approved
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Assessment Register  │
-                         └──────────────────────┘
-```
-
-**Architecture shorthand**
+**Architecture at a glance**
 
 `Specialist Research → Synthesis → Adversarial Critique → Targeted Verification → Evidence Adjudication → Human Approval → Controlled Publication`
 
