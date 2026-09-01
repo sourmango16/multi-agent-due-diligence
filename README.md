@@ -302,12 +302,40 @@ Claims that went beyond the available evidence were downgraded rather than being
 
 ### Execution evidence
 
-The following screenshots demonstrate the prototype running through the major control points:
+### 1. Successful end-to-end orchestration
 
-1. **Workflow execution** — successful orchestration across specialist agents, analysis, critique, verification and adjudication
-2. **Final adjudication** — structured risk, confidence, confirmed findings and unresolved findings
-3. **Human approval** — explicit reviewer decision before publication
-4. **Approved assessment register** — persisted output following approval
+The complete workflow executed successfully across specialist research,
+analysis, adversarial critique, targeted verification, adjudication,
+human approval and controlled publication.
+
+![Successful n8n workflow execution](01-workflow-execution.png)
+
+### 2. Evidence-based final adjudication
+
+The Final Adjudicator receives the consolidated verification results and
+produces a structured decision separating overall risk from confidence,
+while preserving confirmed and unresolved findings.
+
+![Final Adjudicator structured output](02-final-adjudication.png)
+
+### 3. Human review
+
+The system does not automatically publish a material assessment requiring
+review. It pauses the workflow and sends the executive assessment to a
+human decision-maker.
+
+![Human review required](03-human-review.png)
+
+### 4. Approval-gated publication
+
+Following explicit approval, the workflow resumes. The approved assessment
+is appended to the assessment register together with the decision metadata
+and timestamp.
+
+![Approved assessment publication](04-approved-publication.png)<img width="1021" height="845" alt="04-approved-publication" src="https://github.com/user-attachments/assets/adbec455-cafb-4e0e-9049-11c1f9f81b01" />
+<img width="816" height="705" alt="03-human-review" src="https://github.com/user-attachments/assets/c8bd5899-1aec-44d4-b49c-b108922310f6" />
+<img width="2048" height="1049" alt="02-final-adjudication" src="https://github.com/user-attachments/assets/2a743a07-12dd-4b64-bfde-90e51cd88fe1" />
+<img width="2048" height="822" alt="01-workflow-execution" src="https://github.com/user-attachments/assets/08dcbb27-4bd8-49cb-a7d7-cfd0e016fcf1" />
 ## 2-minute demo walkthrough
 
 **Opening — 15 seconds**
